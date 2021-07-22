@@ -1,0 +1,84 @@
+npm init -y
+npm i nodemailer
+
+# import packaget inside index.js
+const nodemailer = require('nodemailer');
+
+# for security reasons, install doenv
+npm i dotenv -S
+
+# buat file .gitignore, isinya sbb:
+node_modules/
+.gitignore
+.env
+
+# buat file .env, isinya sbb:
+EMAIL="****@gmail.com" // sesuaikan dengan email kita
+PASSWORD="*******" // isikan password email kita
+
+# tambahkan kode berikut jika menggunakan .env pada file index.js / entry point
+// Gmail account info
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
+    }
+});
+
+# tambahkan kode berikut pada filel index.js
+// Send email 📧  and retrieve server response
+transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log('Email sent: ' + info.response);
+    }
+});
+
+# Berikut kode lengkap file index.js
+const express = require("express");
+const nodemailer = require("nodemailer");
+const app = express();
+require("dotenv").config();
+
+// Gmail account info
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.EMAIL,
+        pass: process.env.PASSWORD
+    }
+});
+
+// Email info
+// const mailOptions = {
+//     from: 'aguspriyatin80@gmail.com',
+//     to: 'sihayati@gmail.com',
+//     subject: 'How to send emails using NodeJS',
+//     text: 'Follow the instructions and you will be fine'
+// };
+// jika menggunakan lampiran
+const mailOptions = {
+    from: 'aguspriyatin80@gmail.com',
+    to: 'sihayati@gmail.com',
+    // cc: 'lexus@gmail.com',
+    // bcc: 'sugar@gmail.com',
+    subject: 'How to send emails using NodeJS with ATTACHMENT',
+    text: 'Follow the instructions and you will be fine',
+    attachments: [{
+    filename: "logo.png", path: "./img/logo.png"}]
+};
+// Send email 📧  and retrieve server response
+transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+        console.log(error);
+    } else {
+        console.log('Email sent: ' + info.response);
+    }
+});
+
+const port = 3001;
+app.listen(port, () => {
+ console.log(`Server is running on port: ${port}`);
+});
